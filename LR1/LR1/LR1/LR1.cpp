@@ -17,7 +17,6 @@ using namespace std;
 //программа должна поместить в текстовый файл output.txt.
 //int main()
 //{
-//    setlocale(LC_ALL, "rus");
 //    ifstream f;
 //    f.open("input.txt");
 //    ofstream f2("output.txt");
@@ -71,14 +70,14 @@ using namespace std;
 //соответствующих этим буквам, делится без остатка на(возможные ответы программы : YES или NO).В случае, если это возможно,
 //программа должна выдать какое - то подмножество кодов Cj1, Cj2, …, Cjk и P – количество всех возможных комбинаций кодового замка, которые его открывают.
 //Входные данные задаются в текстовом файле input.txt, а результаты – в текстовом файле output.txt.
-void findSubsets(const vector<int>& codes, int N, vector<vector<int>>& results, vector<int>& currentSubset, int start, int currentSum) {
+void findSubsets(const vector<int>& codes, int N, vector<vector<int>>& results, vector<int>& currentSubset, int start, int currentSum, int& k) {
     if (currentSum % N == 0 && !currentSubset.empty()) {
         results.push_back(currentSubset);
+        ++k;
     }
-
     for (int i = start; i < codes.size(); ++i) {
         currentSubset.push_back(codes[i]);
-        findSubsets(codes, N, results, currentSubset, i + 1, currentSum + codes[i]);
+        findSubsets(codes, N, results, currentSubset, i + 1, currentSum + codes[i], k);
         currentSubset.pop_back();
     }
 }
@@ -99,14 +98,15 @@ int main() {
         }
         vector<vector<int>> results;
         vector<int> currentSubset;
-        findSubsets(codes, N, results, currentSubset, 0, 0);
+        int k = 0;
+        findSubsets(codes, N, results, currentSubset, 0, 0,k);
         if (!results.empty()) {
             f2 << "YES\n";
             for (int num : results[0]) {
                 f2 << num << " ";
             }
             f2 << "\n";
-            f2 << results.size() << "\n";
+            f2 << k << "\n";
         }
         else {
             f2 << "NO\n";
